@@ -1,0 +1,49 @@
+{
+  "name": "intg-express",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Muhammad Yousuf <khanyousufmy80@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "test": "npx mocha \"src/**/*.test.js\" --recursive --require @babel/register --file ./mocha-setup.js",
+    "test:watch": "npm t -- --watch",
+    "coverage": "nyc --reporter=lcov --reporter=text  npm t"
+  },
+  "devDependencies": {
+    "@babel/core": "7.23.0",
+    "@babel/preset-env": "7.22.20",
+    "@babel/register": "7.22.15",
+    "chai": "4.3.10",
+    "chai-exclude": "2.1.0",
+    "mocha": "10.2.0",
+    "nyc": "15.1.0",
+    "regenerator-runtime": "0.14.0",
+    "sinon": "16.0.0",
+    "supertest": "6.3.3"
+  },
+  "dependencies": {
+    "dotenv": "16.3.1",
+    "express": "4.18.2",
+    "lodash": "4.17.21",
+    "mongodb": "6.1.0"
+  },
+  "nyc": {
+    "report-dir": "./coverage",
+    "lines": 95,
+    "statements": 95,
+    "functions": 100,
+    "branches": 90,
+    "include": [
+      "src/*.js"
+    ],
+    "exclude": [
+      "src/index.js"
+    ],
+    "reporter": [
+      "lcov",
+      "text"
+    ],
+    "cache": true,
+    "all": true
+  }
+}
