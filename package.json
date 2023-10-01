@@ -1,0 +1,22 @@
+{
+  "name": "tdd-",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Muhammad Yousuf <khanyousufmy80@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "test": "npx mocha \"src/**/*.test.js\" --recursive --require @babel/register",
+    "coverage": "nyc --reporter=lcov --reporter=text  npm t"
+  },
+  "devDependencies": {
+    "@babel/core": "7.23.0",
+    "@babel/preset-env": "7.22.20",
+    "@babel/register": "7.22.15",
+    "chai": "4.3.10",
+    "mocha": "10.2.0",
+    "nyc": "15.1.0"
+  },
+  "dependencies": {
+    "lodash": "4.17.21"
+  }
+}
