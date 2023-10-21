@@ -4,7 +4,18 @@ import db from './db.js'
 const app = express()
 
 const PORT = process.env.PORT || 8080
-
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*')
+  res.setHeader(
+    'Access-Control-Allow-Headers',
+    'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization'
+  )
+  res.setHeader(
+    'Access-Control-Allow-Methods',
+    'GET, POST, PUT, DELETE, PATCH, OPTIONS'
+  )
+  next()
+})
 app.get('/users/:username', async (req, res) => {
   const { username } = req.params
   try {
