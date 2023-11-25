@@ -21,7 +21,10 @@ COPY package.json ./
 
 RUN yarn install --prod 
 
-COPY . .
+COPY ecosystem.config.json .
+COPY .env .
+COPY .babelrc .
+
 
 COPY --from=development /usr/src/app/dist ./dist
 
