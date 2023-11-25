@@ -86,7 +86,7 @@ async function makeConnection(dbName = 'test') {
     if (dbExists !== -1) {
       logger.info(`Connecting to Database: ${dbName}`)
       client = MondgoDbInstance.db(dbName)
-      return await MondgoDbInstance.db(dbName).command({ ping: 2 })
+      return await MondgoDbInstance.db(dbName).command({ ping: 1 })
     }
     throw new CustomError(
       `Database ${dbName} does not exists! 💣`,
