@@ -9,11 +9,19 @@
     "plugin:security/recommended",
     "plugin:prettier/recommended"
   ],
+  "settings": {
+    "import/resolver": {
+      "node": {
+        "extensions": [".js"]
+      }
+    }
+  },
   "plugins": ["jest", "security", "prettier"],
   "parserOptions": {
-    "ecmaVersion": 2018
+    "ecmaVersion": 2020
   },
   "rules": {
+    "import/extensions": ["error", "ignorePackages"],
     "prettier/prettier": [
       "error",
       {
@@ -25,6 +33,15 @@
     "no-underscore-dangle": "off",
     "consistent-return": "off",
     "jest/expect-expect": "off",
-    "security/detect-object-injection": "off"
+    "security/detect-object-injection": "off",
+    "no-use-before-define": [
+      "error",
+      {
+        "functions": false,
+        "classes": true,
+        "variables": true,
+        "allowNamedExports": false
+      }
+    ]
   }
 }
