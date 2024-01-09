@@ -26,7 +26,11 @@
     ],
     "paths": {
       "@/*": ["src/*"],
-      "@config/*": ["src/config/*"]
+      "@config/*": ["src/config/*"],
+      "@controllers/*": ["src/controllers/*"],
+      "@interfaces/*": ["src/interfaces/*"],
+      "@services/*": ["src/services/*"],
+      "@middleware/*": ["src/middleware/*"]
     }
   }
 }
