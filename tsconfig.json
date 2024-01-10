@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
-    "target": "ES2015",
-    "lib": ["DOM", "ES2015"],
+    "target": "ESNext",
+    "lib": ["DOM", "ESNext"],
     "module": "commonjs",
     "baseUrl": ".",
     "outDir": "./build",
@@ -30,7 +30,9 @@
       "@controllers/*": ["src/controllers/*"],
       "@interfaces/*": ["src/interfaces/*"],
       "@services/*": ["src/services/*"],
-      "@middleware/*": ["src/middleware/*"]
+      "@middleware/*": ["src/middleware/*"],
+      "@utils/*": ["src/utils/*"],
+      "@schemas/*": ["src/schemas/*"]
     }
   }
 }
