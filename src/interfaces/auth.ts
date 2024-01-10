@@ -5,6 +5,10 @@ declare global {
     }
   }
 }
+export interface UserStatus {
+  active: 1
+  inactive: 0
+}
 
 export interface IAuthPayload {
   id: number
@@ -22,15 +26,26 @@ export interface IAuth {
 }
 
 export interface IAuthDocument {
-  id?: number
-  profilePublicId?: string
+  userId?: number
   username?: string
+  firstName?: string
+  lastName?: string
+  profilePublicId?: string
+  gender?: string
+  description?: string
   email?: string
   password?: string
+  status?: number
+  role?: string
+  phone?: string
   country?: string
-  profilePicture?: string
+  city?: string
+  profilePicture?: string | null
+  profileCover?: string | null
   emailVerified?: number
   emailVerificationToken?: string
+  loginStatus?: number
+  lastLogin?: Date
   createdAt?: Date
   updatedAt?: Date
   passwordResetToken?: string
@@ -80,6 +95,7 @@ export interface IAuthUser {
   passwordResetExpires: Date | null
   passwordResetToken: null | null
   profilePicture: string | null
+  profileCover: string | null
   updatedAt: Date | null
   username: string | null
 }
