@@ -1,3 +1,10 @@
-import { hello } from '@/config/env'
+import express, { Express } from 'express'
+import { start } from '@/server'
+import { databaseConnection } from '@config/db'
 
-console.log(hello)
+// App entrypoint
+;((): void => {
+  const app: Express = express()
+  databaseConnection()
+  start(app)
+})()
