@@ -17,6 +17,7 @@ module.exports = {
         'revert',
         'perf',
         'types',
+        'wip',
       ],
     ],
   },
