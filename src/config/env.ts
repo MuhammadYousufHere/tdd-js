@@ -10,6 +10,8 @@ const {
   DB_PASSWORD,
   DB_PORT,
   BASE_PATH,
+  JWT_SECRET,
+  AUTH_COOKIE_NAME,
 } = process.env
 
 export const config = {
@@ -22,4 +24,6 @@ export const config = {
   dbPassword: DB_PASSWORD!,
   dbPort: DB_PORT!,
   apiBasePath: BASE_PATH!,
+  jwtSecret: JWT_SECRET!,
+  authCookieName: AUTH_COOKIE_NAME!,
 }
