@@ -1,4 +1,11 @@
-import { Application, urlencoded, json } from 'express'
+import {
+  Application,
+  urlencoded,
+  json,
+  Request,
+  Response,
+  NextFunction,
+} from 'express'
 import http from 'http'
 import 'express-async-errors'
 import hpp from 'hpp'
@@ -11,6 +18,7 @@ import { Logger } from 'winston'
 import { config } from '@config/env'
 import { appRoutes } from '@/routes/routes'
 import { winstonLogger } from '@utils/logger'
+import { CustomError, IErrorResponse } from './utils/errorHandler'
 
 const log: Logger = winstonLogger('authenticationServer', 'debug')
 
@@ -18,6 +26,7 @@ export function start(app: Application): void {
   securityMiddleware(app)
   standardMiddleware(app)
   routesMiddleware(app)
+  authErrorHandler(app)
   startServer(app)
 }
 
@@ -43,6 +52,22 @@ function securityMiddleware(app: Application) {
       credentials: true,
       methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     })
+  )
+}
+function authErrorHandler(app: Application): void {
+  app.use(
+    (
+      error: IErrorResponse,
+      _req: Request,
+      res: Response,
+      next: NextFunction
+    ) => {
+      log.log('error', `AuthService ${error.comingFrom}:`, error)
+      if (error instanceof CustomError) {
+        res.status(error.statusCode).json(error.serializeErrors())
+      }
+      next()
+    }
   )
 }
 
