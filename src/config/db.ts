@@ -23,6 +23,7 @@ export const sequelize: Sequelize = new Sequelize(
 export async function databaseConnection(): Promise<void> {
   try {
     await sequelize.authenticate()
+    // await sequelize.sync()
     log.info(
       'AuthService Mysql database connection has been established successfully.'
     )
