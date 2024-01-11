@@ -26,25 +26,19 @@ export interface IAuth {
 }
 
 export interface IAuthDocument {
-  userId?: number
+  id?: number
   username?: string
-  firstName?: string
-  lastName?: string
   profilePublicId?: string
   gender?: string
-  description?: string
   email?: string
   password?: string
   status?: number
-  role?: string
-  phone?: string
+  role?: 'professional' | 'company' | 'institue'
   country?: string
-  city?: string
   profilePicture?: string | null
-  profileCover?: string | null
   emailVerified?: number
   emailVerificationToken?: string
-  loginStatus?: number
+  loginStatus?: 'active' | 'inactive'
   lastLogin?: Date
   createdAt?: Date
   updatedAt?: Date
@@ -95,7 +89,6 @@ export interface IAuthUser {
   passwordResetExpires: Date | null
   passwordResetToken: null | null
   profilePicture: string | null
-  profileCover: string | null
   updatedAt: Date | null
   username: string | null
 }
