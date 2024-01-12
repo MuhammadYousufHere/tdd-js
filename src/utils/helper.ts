@@ -12,6 +12,10 @@ export function firstLetterUppercase(str: string): string {
 export function lowerCase(str: string): string {
   return str.toLowerCase()
 }
+export const formatedDate = new Date()
+  .toISOString()
+  .replace(/T/, ' ')
+  .replace(/\..+/g, '')
 
 export const toUpperCase = (str: string): string => {
   return str ? str.toUpperCase() : str
