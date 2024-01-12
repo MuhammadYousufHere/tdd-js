@@ -14,12 +14,19 @@ export const signupSchema: ObjectSchema = Joi.object().keys({
       'string.base': 'role must be type of string. i.e. professional',
       'string.empty': 'role is a required field',
     }),
-  password: Joi.string().min(8).max(15).required().messages({
-    'string.base': 'Password must be of type string',
-    'string.min': 'password should not be less than 8 characters',
-    'string.max': 'password should not exceed more than 15 characters',
-    'string.empty': 'Password is a required field',
-  }),
+  password: Joi.string()
+    .min(8)
+    .max(25)
+    .regex(/^(?=\S*[a-z])(?=\S*[A-Z])(?=\S*\d)(?=\S*[^\w\s])\S{8,15}$/)
+    .required()
+    .messages({
+      'string.base': 'Password must be of type string',
+      'string.min': 'password should not be less than 8 characters',
+      'string.max': 'password should not exceed more than 15 characters',
+      'string.empty': 'Password is a required field',
+      'string.pattern.base':
+        'Password should contain at least one number, one lowercase and uppercase letter and one special character',
+    }),
   country: Joi.string().required().messages({
     'string.base': 'country must be of type string',
     'string.empty': 'country is a required field',
