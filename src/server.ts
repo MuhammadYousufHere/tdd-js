@@ -64,7 +64,7 @@ function authErrorHandler(app: Application): void {
     ) => {
       log.log('error', `AuthService ${error.comingFrom}:`, error)
       if (error instanceof CustomError) {
-        res.status(error.statusCode).json(error.serializeErrors())
+        res.status(error.code).json(error.serializeErrors())
       }
       next()
     }
