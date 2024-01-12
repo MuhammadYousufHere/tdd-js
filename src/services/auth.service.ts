@@ -40,7 +40,52 @@ async function getUserByUsernameOrEmail(
     logger.error('from getUserByUsernameOrEmail()', error)
   }
 }
-export async function isNewRecord(
+
+async function getUserByEmail(
+  email: string
+): Promise<IAuthDocument | undefined> {
+  try {
+    const user = await sequelize.models.auths.findOne({
+      where: { email },
+    })
+
+    return user?.dataValues
+  } catch (error) {
+    logger.error('from getUserByUsernameOrEmail()', error)
+  }
+}
+
+async function updateForgotPasswordToken(
+  userId: string | number,
+  passwordResetToken: string,
+  passwordResetExpires: Date
+): Promise<void> {
+  try {
+    await AuthModel.update(
+      {
+        passwordResetToken,
+        passwordResetExpires,
+      },
+      { where: { id: userId } }
+    )
+  } catch (error) {
+    logger.error('from updateForgotPasswordToken()', error)
+  }
+}
+
+async function getAuthUserByResetPasswordToken(
+  token: string
+): Promise<IAuthDocument | undefined> {
+  try {
+    const user: Model = (await AuthModel.findOne({
+      where: { passwordResetToken: token },
+    })) as Model
+    return user.dataValues
+  } catch (error) {
+    logger.error('from getAuthUserByResetPasswordToken()', error)
+  }
+}
+async function isNewRecord(
   username: string,
   email: string
 ): Promise<boolean | undefined> {
@@ -85,4 +130,12 @@ function signToken(
   )
 }
 
-export { createAuthUser, getUserByUsernameOrEmail, signToken }
+export {
+  isNewRecord,
+  createAuthUser,
+  getUserByUsernameOrEmail,
+  getUserByEmail,
+  signToken,
+  updateForgotPasswordToken,
+  getAuthUserByResetPasswordToken,
+}
