@@ -16,3 +16,8 @@ export function lowerCase(str: string): string {
 export const toUpperCase = (str: string): string => {
   return str ? str.toUpperCase() : str
 }
+export function isEmail(email: string): boolean {
+  const regexExp =
+    /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/gi
+  return regexExp.test(email)
+}
