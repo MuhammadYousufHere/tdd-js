@@ -29,16 +29,18 @@ export const signupSchema: ObjectSchema = Joi.object().keys({
     'string.email': 'email is not valid',
     'string.empty': 'email is a required field',
   }),
-  gender: Joi.string().valid('Male', 'Female', 'N/A').required().messages({
+  gender: Joi.string().valid('male', 'female', 'n/a').required().messages({
     'string.base': 'gender must be type of string. i.e. male',
     'string.empty': 'gender is a required field',
   }),
   profilePicture: Joi.object({
     data: Joi.binary().required(),
+    size: Joi.number().max(1633365),
     name: Joi.string().required(),
     type: Joi.string().valid('image/jpeg', 'image/png', 'image/gif').required(),
   }).messages({
     'string.base': 'please add a profile picture',
     'string.empty': 'profile picture is required',
+    'number.max': 'file is too large',
   }),
 })
