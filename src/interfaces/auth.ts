@@ -29,7 +29,7 @@ export interface IAuthDocument {
   id?: number
   username?: string
   profilePublicId?: string
-  gender?: string
+  gender?: 'male' | 'female' | 'n/a'
   email?: string
   password?: string
   status?: number

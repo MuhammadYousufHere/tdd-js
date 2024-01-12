@@ -3,7 +3,12 @@ import { create } from '@/controllers/signup'
 import express, { Router } from 'express'
 import multer from 'multer'
 
-const upload = multer({ dest: '/uploads' })
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: {
+    fileSize: 5 * 1024 * 1024, // limit file size to 5MB
+  },
+})
 
 const router: Router = express.Router()
 

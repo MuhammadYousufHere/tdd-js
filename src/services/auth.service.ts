@@ -1,11 +1,15 @@
 import { Model, Op } from 'sequelize'
 import _ from 'lodash'
+import { sign } from 'jsonwebtoken'
 import { AuthModel } from '@/models/auth'
 import { IAuthDocument } from '@/interfaces/auth'
 import { winstonLogger } from '@/utils/logger'
 import { sequelize } from '@/config/db'
+import { config } from '@/config/env'
 
 const logger = winstonLogger('authService', 'debug')
+
+type ExpiresIn = '24h' | '1h'
 
 async function createAuthUser(
   data: IAuthDocument
@@ -63,4 +67,22 @@ export async function isNewRecord(
     logger.error('from isNewRecord()', error)
   }
 }
-export { createAuthUser, getUserByUsernameOrEmail }
+
+function signToken(
+  id: number,
+  email: string,
+  username: string,
+  opt: ExpiresIn
+): string {
+  return sign(
+    {
+      id,
+      email,
+      username,
+    },
+    config.jwtSecret,
+    { expiresIn: opt }
+  )
+}
+
+export { createAuthUser, getUserByUsernameOrEmail, signToken }

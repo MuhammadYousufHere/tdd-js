@@ -36,7 +36,7 @@ const AuthModel: ModelDefined<IAuthDocument, AuthUserCreationAttributes> =
       },
       profilePicture: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
       },
 
       emailVerificationToken: {
