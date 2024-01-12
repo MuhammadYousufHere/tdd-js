@@ -2,19 +2,19 @@ import { StatusCodes } from 'http-status-codes'
 
 export interface IErrorResponse {
   message: string
-  statusCode: number
+  code: number
   comingFrom: string
   serializeErrors(): IError
 }
 
 export interface IError {
   message: string
-  statusCode: number
+  code: number
   comingFrom: string
 }
 
 export abstract class CustomError extends Error {
-  abstract statusCode: number
+  abstract code: number
   comingFrom: string
 
   constructor(message: string, comingFrom: string) {
@@ -25,14 +25,14 @@ export abstract class CustomError extends Error {
   serializeErrors(): IError {
     return {
       message: this.message,
-      statusCode: this.statusCode,
+      code: this.code,
       comingFrom: this.comingFrom,
     }
   }
 }
 
 export class BadRequestError extends CustomError {
-  statusCode = StatusCodes.BAD_REQUEST
+  code = StatusCodes.BAD_REQUEST
 
   constructor(message: string, comingFrom: string) {
     super(message, comingFrom)
@@ -40,7 +40,7 @@ export class BadRequestError extends CustomError {
 }
 
 export class NotFoundError extends CustomError {
-  statusCode = StatusCodes.NOT_FOUND
+  code = StatusCodes.NOT_FOUND
 
   constructor(message: string, comingFrom: string) {
     super(message, comingFrom)
@@ -48,7 +48,7 @@ export class NotFoundError extends CustomError {
 }
 
 export class NotAuthorizedError extends CustomError {
-  statusCode = StatusCodes.UNAUTHORIZED
+  code = StatusCodes.UNAUTHORIZED
 
   constructor(message: string, comingFrom: string) {
     super(message, comingFrom)
@@ -56,7 +56,7 @@ export class NotAuthorizedError extends CustomError {
 }
 
 export class FileTooLargeError extends CustomError {
-  statusCode = StatusCodes.REQUEST_TOO_LONG
+  code = StatusCodes.REQUEST_TOO_LONG
 
   constructor(message: string, comingFrom: string) {
     super(message, comingFrom)
@@ -64,7 +64,7 @@ export class FileTooLargeError extends CustomError {
 }
 
 export class ServerError extends CustomError {
-  statusCode = StatusCodes.SERVICE_UNAVAILABLE
+  code = StatusCodes.SERVICE_UNAVAILABLE
 
   constructor(message: string, comingFrom: string) {
     super(message, comingFrom)
