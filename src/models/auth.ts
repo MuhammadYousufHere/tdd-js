@@ -84,8 +84,7 @@ const AuthModel: ModelDefined<IAuthDocument, AuthUserCreationAttributes> =
       passwordResetToken: { type: DataTypes.STRING, allowNull: true },
       passwordResetExpires: {
         type: DataTypes.DATE,
-        allowNull: false,
-        defaultValue: new Date(),
+        allowNull: true,
       },
     },
     {
