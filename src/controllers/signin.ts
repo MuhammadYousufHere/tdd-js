@@ -67,6 +67,13 @@ export async function read(req: Request, res: Response): Promise<void> {
     }
     const { id, username: orgUsername, email } = user.dataValues
 
+    // #update metadata
+    await AuthModel.update(
+      {
+        loginStatus: 'active',
+      },
+      { where: { username: user?.dataValues?.username } }
+    )
     // generate accessToken and refreshToken as cookie
     const refreshToken = signToken(id, email, orgUsername, '24h')
     const accessToken = signToken(id, email, orgUsername, '1h')
