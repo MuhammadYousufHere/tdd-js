@@ -12,15 +12,11 @@ import { uploadFileS3 } from '@/lib/uploadfile'
 import { Logger } from 'winston'
 import { winstonLogger } from '@/utils/logger'
 import { firstLetterUppercase } from '@/utils/helper'
+import { authCookieOptions } from '@/config/cookie'
+import { jwtDecode } from 'jwt-decode'
 
 const log: Logger = winstonLogger('authenticationServer', 'debug')
 
-const authCookieOptions = {
-  httpOnly: true,
-  sameSite: false,
-  expires: new Date(Date.now() + 86400000), // 1 day life
-  secure: true,
-}
 export async function create(req: Request, res: Response): Promise<void> {
   // # validate the body
   const { error } = await Promise.resolve(signupSchema.validate(req.body))
@@ -91,11 +87,16 @@ export async function create(req: Request, res: Response): Promise<void> {
       result.username!,
       '1h'
     )
+
+    req.currentUser = {
+      id: result.id!,
+      username: result.username!,
+      email: result.username!,
+      iat: jwtDecode(accessToken).iat,
+      exp: jwtDecode(accessToken).exp,
+    }
     res
-      .cookie(config.authCookieName, refreshToken, {
-        ...authCookieOptions,
-        maxAge: 86400000,
-      })
+      .cookie(config.authCookieName, refreshToken, authCookieOptions)
       .status(StatusCodes.CREATED)
       .json({
         code: StatusCodes.CREATED,
