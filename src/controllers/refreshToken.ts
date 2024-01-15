@@ -6,6 +6,7 @@ import { NotAuthorizedError } from '@/utils/errorHandler'
 import { Request, Response } from 'express'
 import { StatusCodes } from 'http-status-codes'
 import { verify } from 'jsonwebtoken'
+import { jwtDecode } from 'jwt-decode'
 
 export async function refreshToken(req: Request, res: Response): Promise<void> {
   const prevRefreshToken = req.signedCookies[config.authCookieName]
@@ -27,6 +28,7 @@ export async function refreshToken(req: Request, res: Response): Promise<void> {
         message: 'Refresh token has expired',
         code: 401,
       })
+      return
     }
     const refreshToken = signToken(
       payload.id!,
@@ -38,9 +40,15 @@ export async function refreshToken(req: Request, res: Response): Promise<void> {
       payload.id!,
       payload.email!,
       payload.username,
-      '24h'
+      '1h'
     )
-
+    req.currentUser = {
+      id: payload.id!,
+      username: payload.username!,
+      email: payload.username!,
+      iat: jwtDecode(accessToken).iat,
+      exp: jwtDecode(accessToken).exp,
+    }
     res
       .cookie(config.authCookieName, refreshToken, authCookieOptions)
       .status(StatusCodes.OK)
