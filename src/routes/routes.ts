@@ -3,10 +3,12 @@ import { healthRoutes } from './health'
 import { authRoutes } from './auth'
 import { config } from '@/config/env'
 import { NotFoundError } from '@/utils/errorHandler'
+import { currentUserRoutes } from './currUser'
 
 export function appRoutes(app: Application): void {
   app.use('/', healthRoutes())
   app.use(config.apiBasePath, authRoutes())
+  app.use(config.apiBasePath, currentUserRoutes())
 
   // all other routes
   catchAll(app)
