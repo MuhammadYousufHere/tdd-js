@@ -11,6 +11,7 @@ import { config } from '@/config/env'
 import { uploadFileS3 } from '@/lib/uploadfile'
 import { Logger } from 'winston'
 import { winstonLogger } from '@/utils/logger'
+import { firstLetterUppercase } from '@/utils/helper'
 
 const log: Logger = winstonLogger('authenticationServer', 'debug')
 
@@ -21,16 +22,26 @@ const authCookieOptions = {
   secure: true,
 }
 export async function create(req: Request, res: Response): Promise<void> {
+  // # validate the body
+  const { error } = await Promise.resolve(signupSchema.validate(req.body))
+  if (error?.details) {
+    throw new BadRequestError(
+      error.details[0].message,
+      'SignUp create() method error'
+    )
+  }
   try {
-    // # validate the body
-    const { error } = await Promise.resolve(signupSchema.validate(req.body))
-    if (error?.details) {
-      throw new BadRequestError(
-        error.details[0].message,
-        'SignUp create() method error'
-      )
-    }
-    const { username, email, password, country, gender, role } = req.body
+    const {
+      username,
+      email,
+      password,
+      country,
+      gender,
+      role,
+      firstName,
+      lastName,
+      dateOfBirth,
+    } = req.body
 
     // # check if user registered
     const isExists: boolean | undefined = await isNewRecord(username, email)
@@ -54,6 +65,9 @@ export async function create(req: Request, res: Response): Promise<void> {
       email,
       loginStatus: 'inactive',
       profilePublicId,
+      firstName: firstLetterUppercase(firstName),
+      lastName: firstLetterUppercase(lastName),
+      dateOfBirth,
       password,
       gender: _.lowerCase(gender),
       country,

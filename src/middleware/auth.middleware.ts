@@ -12,10 +12,8 @@ export function authMiddleware(
 ) {
   // verify token
   try {
-    const cookie = req.cookies[config.authCookieName]
     if (req.headers.authorization) {
       const token = req.headers.authorization.split(' ')[1]
-      console.log({ decode: jwtDecode(token) })
       if (!token) {
         throw new NotAuthorizedError(
           'Not Authenticated',

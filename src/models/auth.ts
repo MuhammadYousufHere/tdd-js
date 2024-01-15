@@ -18,6 +18,14 @@ const AuthModel: ModelDefined<IAuthDocument, AuthUserCreationAttributes> =
         type: DataTypes.STRING,
         allowNull: false,
       },
+      firstName: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      lastName: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
       password: {
         type: DataTypes.STRING,
         allowNull: false,
@@ -29,6 +37,9 @@ const AuthModel: ModelDefined<IAuthDocument, AuthUserCreationAttributes> =
       email: {
         type: DataTypes.STRING,
         allowNull: false,
+      },
+      dateOfBirth: {
+        type: DataTypes.DATE,
       },
       country: {
         type: DataTypes.STRING,
@@ -56,7 +67,7 @@ const AuthModel: ModelDefined<IAuthDocument, AuthUserCreationAttributes> =
         allowNull: false,
         type: DataTypes.STRING,
         validate: {
-          isIn: [['professional', 'company', 'institue']],
+          isIn: [['professional', 'company', 'institue', 'admin']],
         },
       },
       gender: {

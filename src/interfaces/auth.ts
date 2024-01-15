@@ -29,17 +29,20 @@ export interface IAuth {
 export interface IAuthDocument {
   id?: number
   username?: string
+  firstName?: string
+  lastName?: string
   profilePublicId?: string
   gender?: 'male' | 'female' | 'n/a'
   email?: string
   password?: string
   status?: number
-  role?: 'professional' | 'company' | 'institue'
+  role?: 'professional' | 'company' | 'institue' | 'admin'
   country?: string
   profilePicture?: string | null
   emailVerified?: number
   emailVerificationToken?: string
   loginStatus?: 'active' | 'inactive'
+  dateOfBirth: Date | string
   lastLogin?: Date
   createdAt?: Date
   updatedAt?: Date
@@ -50,12 +53,16 @@ export interface IAuthDocument {
 }
 
 export interface ISignUpPayload {
-  [key: string]: string
   username: string
+  firstName: string
+  lastName: string
   password: string
   email: string
+  role: Pick<IAuthDocument, 'role'>['role']
   country: string
+  gender: Pick<IAuthDocument, 'gender'>['gender']
   profilePicture: string
+  dateOfBirth: Date | string
 }
 
 export interface ISignInPayload {

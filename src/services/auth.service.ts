@@ -90,7 +90,7 @@ async function isNewRecord(
   email: string
 ): Promise<boolean | undefined> {
   try {
-    const res = await sequelize.models.auths.findAll({
+    const res = await sequelize.models.auths.findOne({
       where: {
         [Op.or]: [
           {
@@ -103,11 +103,10 @@ async function isNewRecord(
       },
       limit: 1,
     })
-
-    if (res && res[0]?.dataValues === undefined) {
-      return false
+    if (res && res?.dataValues) {
+      return true
     }
-    return true
+    return false
   } catch (error) {
     logger.error('from isNewRecord()', error)
   }
