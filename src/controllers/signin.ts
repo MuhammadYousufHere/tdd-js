@@ -1,3 +1,4 @@
+import { authCookieOptions } from '@/config/cookie'
 import { sequelize } from '@/config/db'
 import { config } from '@/config/env'
 import { userSignInSchema } from '@/lib/signin'
@@ -8,16 +9,11 @@ import { isEmail } from '@/utils/helper'
 import { winstonLogger } from '@/utils/logger'
 import { Request, Response } from 'express'
 import { StatusCodes } from 'http-status-codes'
+import { jwtDecode } from 'jwt-decode'
 import { Logger } from 'winston'
 
 const log: Logger = winstonLogger('authenticationServer', 'debug')
 
-const authCookieOptions = {
-  httpOnly: true,
-  sameSite: false,
-  expires: new Date(Date.now() + 86400000), // 1 day life
-  secure: true,
-}
 export async function read(req: Request, res: Response): Promise<void> {
   try {
     const authorization = req.headers['authorization']?.split(' ')[1]
@@ -77,6 +73,13 @@ export async function read(req: Request, res: Response): Promise<void> {
     // generate accessToken and refreshToken as cookie
     const refreshToken = signToken(id, email, orgUsername, '24h')
     const accessToken = signToken(id, email, orgUsername, '1h')
+    req.currentUser = {
+      id,
+      username: orgUsername,
+      email,
+      iat: jwtDecode(accessToken).iat,
+      exp: jwtDecode(accessToken).exp,
+    }
     res
       .cookie(config.authCookieName, refreshToken, authCookieOptions)
       .status(200)
