@@ -17,7 +17,7 @@ export async function logout(req: Request, res: Response): Promise<void> {
       },
       { where: { id: req.currentUser?.id } }
     )
-    res.clearCookie(config.jwtSecret).json({
+    res.clearCookie(config.authCookieName).json({
       code: StatusCodes.OK,
       message: 'Sign out successful',
     })
