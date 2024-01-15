@@ -19,8 +19,6 @@ import { config } from '@config/env'
 import { appRoutes } from '@/routes/routes'
 import { winstonLogger } from '@utils/logger'
 import { CustomError, IErrorResponse } from './utils/errorHandler'
-import { IAuthPayload } from './interfaces/auth'
-import { verify } from 'jsonwebtoken'
 
 const log: Logger = winstonLogger('authenticationServer', 'debug')
 
@@ -36,7 +34,7 @@ function standardMiddleware(app: Application): void {
   app.use(compression())
   app.use(json({ limit: '200mb' }))
   app.use(urlencoded({ extended: true, limit: '200mb' }))
-  app.use(cookieParser())
+  app.use(cookieParser(config.authCookieSecret))
 }
 
 function routesMiddleware(app: Application): void {
@@ -55,18 +53,6 @@ function securityMiddleware(app: Application) {
       methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     })
   )
-  // app.use((req: Request, _res: Response, next: NextFunction) => {
-  //   if (req.headers.authorization) {
-  //     const token = req.headers.authorization.split(' ')[1]
-  //     console.log({ token })
-  //     const payload: IAuthPayload = verify(
-  //       token,
-  //       config.jwtSecret!
-  //     ) as IAuthPayload
-  //     req.currentUser = payload
-  //   }
-  //   next()
-  // })
 }
 function authErrorHandler(app: Application): void {
   app.use(
