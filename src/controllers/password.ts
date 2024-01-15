@@ -1,4 +1,8 @@
-import { emailSchema, resetPasswordSchema } from '@/lib/password.schema'
+import {
+  changePasswordSchema,
+  emailSchema,
+  resetPasswordSchema,
+} from '@/lib/password.schema'
 import { BadRequestError, NotFoundError } from '@/utils/errorHandler'
 import { Request, Response } from 'express'
 import { Logger } from 'winston'
@@ -8,8 +12,11 @@ import {
   getAuthUserByResetPasswordToken,
   getUserByEmail,
   updateForgotPasswordToken,
+  updatePassword,
 } from '@/services/auth.service'
 import crypto from 'crypto'
+import { AuthModel } from '@/models/auth'
+import { Model } from 'sequelize'
 
 const log: Logger = winstonLogger('authenticationServer', 'debug')
 
@@ -34,9 +41,11 @@ async function forgotPassword(req: Request, res: Response): Promise<void> {
     const date: Date = new Date()
     date.setHours(date.getHours() + 1)
     updateForgotPasswordToken(user.id!, randomCharacters, date)
-    res
-      .status(StatusCodes.OK)
-      .json({ message: 'Password reset email sent.', code: StatusCodes.OK })
+    res.status(StatusCodes.OK).json({
+      message: 'Password reset email sent.',
+      code: StatusCodes.OK,
+      data: null,
+    })
   } catch (error) {
     if (error instanceof BadRequestError || error instanceof NotFoundError) {
       res
@@ -56,10 +65,14 @@ async function forgotPassword(req: Request, res: Response): Promise<void> {
 // - should not be old
 // - unique
 async function resetPassword(req: Request, res: Response): Promise<void> {
+  const token = req.params.token
+  if (!token) {
+    throw new BadRequestError(
+      'Reset Password token is not present',
+      'resetPassowrd() method'
+    )
+  }
   try {
-    const token = req.params.token
-    console.log({ token })
-
     const { error } = await Promise.resolve(
       resetPasswordSchema.validate(req.body)
     )
@@ -70,8 +83,18 @@ async function resetPassword(req: Request, res: Response): Promise<void> {
       )
     }
     const user = await getAuthUserByResetPasswordToken(token)
-    console.log({ user })
-    res.send('reset passowrd')
+    console.log(user)
+    if (!user || user?.id) {
+      throw new BadRequestError(
+        'Reset token has expired',
+        'Password resetPassword() method error'
+      )
+    }
+    res.status(StatusCodes.OK).json({
+      message: 'reset password succssful',
+      code: StatusCodes.OK,
+      data: null,
+    })
   } catch (error) {
     if (error instanceof BadRequestError) {
       res
@@ -83,14 +106,66 @@ async function resetPassword(req: Request, res: Response): Promise<void> {
         code: StatusCodes.INTERNAL_SERVER_ERROR,
       })
     }
-    log.error('from read()', error)
+    log.error('from resetPassword()', error)
   }
 }
 
 // # private - has auth token
 async function changePassword(req: Request, res: Response): Promise<void> {
-  console.log(req.body)
-  res.send('change password')
+  const { error } = await Promise.resolve(
+    changePasswordSchema.validate(req.body)
+  )
+
+  if (error?.details) {
+    throw new BadRequestError(
+      error.details[0].message,
+      'password changePassword() method'
+    )
+  }
+  try {
+    const { oldPassword, newPassword } = req.body
+
+    const currUser: Model = (await AuthModel.findOne({
+      where: { id: req.currentUser?.id },
+      attributes: ['password'],
+    })) as Model
+    console.log(currUser.dataValues)
+
+    // # Check for password match
+    const passwordsMatch: boolean = await AuthModel.prototype.comparePassword(
+      oldPassword,
+      currUser?.dataValues?.password
+    )
+    console.log({ passwordsMatch })
+    if (!passwordsMatch) {
+      throw new BadRequestError(
+        'You have entered an invalid current password',
+        'Password changePassword() method error'
+      )
+    }
+
+    const hashedPassword: string =
+      await AuthModel.prototype.hashPassword(newPassword)
+    await updatePassword(req.currentUser?.id!, hashedPassword)
+
+    res.status(StatusCodes.OK).json({
+      message: 'your password updated successfuly',
+      code: StatusCodes.OK,
+      data: null,
+    })
+  } catch (error) {
+    if (error instanceof BadRequestError) {
+      res
+        .status(StatusCodes.BAD_REQUEST)
+        .json({ message: error.message, code: error.code })
+    } else {
+      res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+        message: 'Something went wrong',
+        code: StatusCodes.INTERNAL_SERVER_ERROR,
+      })
+    }
+    log.error('from changePassword()', error)
+  }
 }
 
 export { forgotPassword, resetPassword, changePassword }
