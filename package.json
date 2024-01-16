@@ -20,6 +20,7 @@
   "devDependencies": {
     "@commitlint/cli": "^18.4.4",
     "@commitlint/config-conventional": "^18.4.4",
+    "@types/amqplib": "^0.10.4",
     "@types/bcryptjs": "^2.4.6",
     "@types/compression": "^1.7.5",
     "@types/cookie-parser": "^1.4.6",
@@ -69,6 +70,7 @@
   "dependencies": {
     "@aws-sdk/client-s3": "^3.485.0",
     "@aws-sdk/s3-request-presigner": "^3.489.0",
+    "amqplib": "^0.10.3",
     "bcryptjs": "^2.4.3",
     "compression": "^1.7.4",
     "cookie-parser": "^1.4.6",
