@@ -11,12 +11,14 @@ import { StatusCodes } from 'http-status-codes'
 import {
   getAuthUserByResetPasswordToken,
   getUserByEmail,
+  resetForgotPassword,
   updateForgotPasswordToken,
   updatePassword,
 } from '@/services/auth.service'
 import crypto from 'crypto'
 import { AuthModel } from '@/models/auth'
 import { Model } from 'sequelize'
+import { format, formatISO } from 'date-fns'
 
 const log: Logger = winstonLogger('authenticationServer', 'debug')
 
@@ -30,6 +32,7 @@ async function forgotPassword(req: Request, res: Response): Promise<void> {
         'from forgotPassowrd() method'
       )
     const user = await getUserByEmail(req.body.email)
+
     if (!user) {
       throw new NotFoundError(
         'Please provide valid crendentials',
@@ -41,8 +44,10 @@ async function forgotPassword(req: Request, res: Response): Promise<void> {
     const date: Date = new Date()
     date.setHours(date.getHours() + 1)
     updateForgotPasswordToken(user.id!, randomCharacters, date)
+
+    // !todo - send the email
     res.status(StatusCodes.OK).json({
-      message: 'Password reset email sent.',
+      message: 'Password reset email sent',
       code: StatusCodes.OK,
       data: null,
     })
@@ -73,6 +78,7 @@ async function resetPassword(req: Request, res: Response): Promise<void> {
     )
   }
   try {
+    const { password } = req.body
     const { error } = await Promise.resolve(
       resetPasswordSchema.validate(req.body)
     )
@@ -83,15 +89,19 @@ async function resetPassword(req: Request, res: Response): Promise<void> {
       )
     }
     const user = await getAuthUserByResetPasswordToken(token)
-    console.log(user)
-    if (!user || user?.id) {
+    if (!user?.id) {
       throw new BadRequestError(
         'Reset token has expired',
         'Password resetPassword() method error'
       )
     }
+    // update password
+    const hashedPassword: string =
+      await AuthModel.prototype.hashPassword(password)
+    await resetForgotPassword(user.id!, hashedPassword)
+
     res.status(StatusCodes.OK).json({
-      message: 'reset password succssful',
+      message: 'your password was reset successfuly',
       code: StatusCodes.OK,
       data: null,
     })
@@ -129,14 +139,12 @@ async function changePassword(req: Request, res: Response): Promise<void> {
       where: { id: req.currentUser?.id },
       attributes: ['password'],
     })) as Model
-    console.log(currUser.dataValues)
 
     // # Check for password match
     const passwordsMatch: boolean = await AuthModel.prototype.comparePassword(
       oldPassword,
       currUser?.dataValues?.password
     )
-    console.log({ passwordsMatch })
     if (!passwordsMatch) {
       throw new BadRequestError(
         'You have entered an invalid current password',
