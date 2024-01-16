@@ -13,7 +13,7 @@ export async function refreshToken(req: Request, res: Response): Promise<void> {
 
   if (!prevRefreshToken) {
     throw new NotAuthorizedError(
-      'You cannot access this resource.',
+      'It looks like you are not logged in',
       'refreshToken() method'
     )
   }
