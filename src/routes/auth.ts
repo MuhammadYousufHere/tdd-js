@@ -24,7 +24,7 @@ export function authRoutes(): Router {
   router.post('/signup', upload.single('profilePicture'), create)
   router.post('/signin', read)
   router.put('/forgot-password', forgotPassword)
-  router.put('/verify-email', verifyEmail)
+  router.put('/verify-email/:token', verifyEmail)
   router.put('/reset-password/:token', resetPassword)
   router.put('/change-password', authMiddleware, changePassword)
   router.delete('/logout', authMiddleware, logout)
