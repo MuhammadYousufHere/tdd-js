@@ -74,7 +74,9 @@ export async function create(req: Request, res: Response): Promise<void> {
     const result: IAuthDocument = (await createAuthUser(
       authData
     )) as IAuthDocument
-    //
+
+    // todo - send the email
+
     const refreshToken = signToken(
       result.id!,
       result.email!,
