@@ -29,7 +29,7 @@ export const signupSchema: ObjectSchema = Joi.object().keys({
   password: Joi.string()
     .min(8)
     .max(25)
-    .regex(/^(?=\S*[a-z])(?=\S*[A-Z])(?=\S*\d)(?=\S*[^\w\s])\S{8,15}$/)
+    .regex(/^(?=\S*[a-z])(?=\S*[A-Z])(?=\S*\d)(?=\S*[^\w\s])\S{8,}$/)
     .required()
     .messages({
       'string.base': 'Password must be of type string',
