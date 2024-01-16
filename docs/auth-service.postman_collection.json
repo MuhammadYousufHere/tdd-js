@@ -1,0 +1,203 @@
+{
+  "info": {
+    "_postman_id": "e7a9c97c-524c-4f0a-b61a-7eff842d74ca",
+    "name": "auth-service",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "32223718"
+  },
+  "item": [
+    {
+      "name": "signup",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "{{authHost}}/api/v1/auth/signup",
+          "host": ["{{authHost}}"],
+          "path": ["api", "v1", "auth", "signup"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "signin",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "{{authHost}}/api/v1/auth/signup",
+          "host": ["{{authHost}}"],
+          "path": ["api", "v1", "auth", "signup"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "logout",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJtdWhhbW1hZC55b3VzdWZoZXJlQHplZ2F0cm9uLmNvbSIsInVzZXJuYW1lIjoibXlvdXN1ZmhlcmUiLCJpYXQiOjE3MDUzMjI2ODgsImV4cCI6MTcwNTMyNjI4OH0.q9KTtsUC9-R6VGR9Nq2K5jQykP1hJu2TZR2r2AI77lI",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "DELETE",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{authHost}}/api/v1/auth/logout",
+          "host": ["{{authHost}}"],
+          "path": ["api", "v1", "auth", "logout"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "refreshToken",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{authHost}}/api/v1/auth/currrent-user",
+          "host": ["{{authHost}}"],
+          "path": ["api", "v1", "auth", "currrent-user"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "forgotPassword",
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{authHost}}/api/v1/auth/forgot-password",
+          "host": ["{{authHost}}"],
+          "path": ["api", "v1", "auth", "forgot-password"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "resetPassword",
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"password\":\"logidn1Q&\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{authHost}}/api/v1/auth/reset-password",
+          "host": ["{{authHost}}"],
+          "path": ["api", "v1", "auth", "reset-password"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "changePassword",
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"oldPassword\":\"login1Q\",\r\n    \"newPassword\":\"login1Q\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{authHost}}/api/v1/auth/reset-password",
+          "host": ["{{authHost}}"],
+          "path": ["api", "v1", "auth", "reset-password"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "verifyEmail",
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"oldPassword\":\"login1Q\",\r\n    \"newPassword\":\"login1Q\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{authHost}}/api/v1/auth/verify-email",
+          "host": ["{{authHost}}"],
+          "path": ["api", "v1", "auth", "verify-email"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "health_check",
+      "request": {
+        "method": "GET",
+        "header": []
+      },
+      "response": []
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [""]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [""]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "authHost",
+      "value": "http://localhost:4001",
+      "type": "string"
+    }
+  ]
+}
