@@ -1,10 +1,10 @@
 import Joi, { ObjectSchema } from 'joi'
 
 export const signupSchema: ObjectSchema = Joi.object().keys({
-  username: Joi.string().min(3).max(12).required().messages({
+  username: Joi.string().min(3).max(21).required().messages({
     'string.base': 'username must be type of string. i.e. iamjohn',
     'string.min': 'username should not be less than 3 characters',
-    'string.max': 'username should not exceed more than 12 characters',
+    'string.max': 'username should not exceed more than 21 characters',
     'string.empty': 'username is a required field',
   }),
   firstName: Joi.string().min(3).max(20).required().messages({
