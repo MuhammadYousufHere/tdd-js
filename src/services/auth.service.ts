@@ -1,4 +1,4 @@
-import { Model, Op } from 'sequelize'
+import { Model, Op, where } from 'sequelize'
 import _ from 'lodash'
 import { sign } from 'jsonwebtoken'
 import { AuthModel } from '@/models/auth'
@@ -54,6 +54,7 @@ async function getUserByEmail(
     logger.error('from getUserByUsernameOrEmail()', error)
   }
 }
+
 async function getUserById(
   userId: string | number
 ): Promise<IAuthDocument | undefined> {
@@ -101,6 +102,7 @@ async function getAuthUserByResetPasswordToken(
     logger.error('from getAuthUserByResetPasswordToken()', error)
   }
 }
+
 async function isNewRecord(
   username: string,
   email: string
@@ -133,6 +135,22 @@ async function updatePassword(authId: number, password: string): Promise<void> {
     await AuthModel.update(
       {
         password,
+      },
+      { where: { id: authId } }
+    )
+  } catch (error) {
+    logger.error(error)
+  }
+}
+
+async function resetForgotPassword(
+  authId: number,
+  password: string
+): Promise<void> {
+  try {
+    await AuthModel.update(
+      {
+        password,
         passwordResetToken: '',
         passwordResetExpires: new Date(),
       },
@@ -143,6 +161,39 @@ async function updatePassword(authId: number, password: string): Promise<void> {
   }
 }
 
+async function getUserByEmailVerificationToken(
+  token: string
+): Promise<IAuthDocument | undefined> {
+  try {
+    const user: Model = (await AuthModel.findOne({
+      where: { emailVerificationToken: token },
+      attributes: {
+        exclude: ['password'],
+      },
+    })) as Model
+    return user?.dataValues
+  } catch (error) {
+    logger.error(error)
+  }
+}
+async function emailVerification(
+  userId: number | string,
+  verificationToken: string
+) {
+  try {
+    await AuthModel.update(
+      { emailVerified: 1 },
+      {
+        where: {
+          id: userId,
+          emailVerificationToken: verificationToken,
+        },
+      }
+    )
+  } catch (error) {
+    logger.error(error)
+  }
+}
 function signToken(
   id: number,
   email: string,
@@ -169,4 +220,7 @@ export {
   getAuthUserByResetPasswordToken,
   getUserById,
   updatePassword,
+  resetForgotPassword,
+  emailVerification,
+  getUserByEmailVerificationToken,
 }
