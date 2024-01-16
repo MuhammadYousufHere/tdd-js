@@ -3,7 +3,12 @@ import { IAuthPayload } from '@/interfaces/auth'
 import { BadRequestError, NotAuthorizedError } from '@/utils/errorHandler'
 import { Request, Response, NextFunction } from 'express'
 import { StatusCodes } from 'http-status-codes'
-import { verify } from 'jsonwebtoken'
+import {
+  JsonWebTokenError,
+  NotBeforeError,
+  TokenExpiredError,
+  verify,
+} from 'jsonwebtoken'
 
 export function authMiddleware(
   req: Request,
@@ -28,24 +33,27 @@ export function authMiddleware(
   try {
     const authHeader = req.headers.authorization.split(' ')
     const token = authHeader[1]
-    if (!token) {
-      throw new NotAuthorizedError(
-        'Not Authenticated',
-        'from authMiddleware() method'
-      )
-    }
-    const payload: IAuthPayload = verify(
-      token,
-      config.jwtSecret!
-    ) as IAuthPayload
-
-    if (!payload) {
-      res.status(StatusCodes.UNAUTHORIZED).json({
-        message: 'Access token has expired',
-        code: 401,
-      })
-    }
-    req.currentUser = payload
+    verify(token, config.jwtSecret || '', (err: any, decoded: any) => {
+      if (err instanceof TokenExpiredError) {
+        throw new NotAuthorizedError(
+          'Unauthorized! Access Token was expired!',
+          'authMiddleware()'
+        )
+      }
+      if (err instanceof NotBeforeError) {
+        throw new NotAuthorizedError(
+          'Unauthorized! Access Token is not active',
+          'authMiddleware()'
+        )
+      }
+      if (err instanceof JsonWebTokenError) {
+        throw new NotAuthorizedError(
+          'Unauthorized! Access Token malformed',
+          'authMiddleware()'
+        )
+      }
+      req.currentUser = decoded as IAuthPayload
+    })
 
     next()
   } catch (error) {
@@ -53,10 +61,12 @@ export function authMiddleware(
       res
         .status(StatusCodes.UNAUTHORIZED)
         .json({ message: error.message, code: error.code })
+    } else {
+      console.log(error)
+      res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+        message: 'Something went wrong!',
+        code: StatusCodes.INTERNAL_SERVER_ERROR,
+      })
     }
-    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-      message: 'Something went wrong!',
-      code: StatusCodes.INTERNAL_SERVER_ERROR,
-    })
   }
 }
