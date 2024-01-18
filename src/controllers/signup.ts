@@ -19,7 +19,9 @@ const log: Logger = winstonLogger('authenticationServer', 'debug')
 
 export async function create(req: Request, res: Response): Promise<void> {
   // # validate the body
-  const { error } = await Promise.resolve(signupSchema.validate(req.body))
+  const { error } = await Promise.resolve(
+    signupSchema.validate({ ...req.body, profilePicture: req.file })
+  )
   if (error?.details) {
     throw new BadRequestError(
       error.details[0].message,
