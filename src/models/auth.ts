@@ -74,7 +74,7 @@ const AuthModel: ModelDefined<IAuthDocument, AuthUserCreationAttributes> =
         allowNull: false,
         type: DataTypes.STRING,
         validate: {
-          isIn: [['male', 'femalte', 'n/a']],
+          isIn: [['male', 'female', 'n/a']],
         },
       },
       status: {
