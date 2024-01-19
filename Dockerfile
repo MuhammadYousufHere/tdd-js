@@ -1,4 +1,7 @@
-FROM node:21-alpine3.18 as builder
+FROM node:20.5.0 as builder
+
+LABEL author='Muhammad Yousuf'
+LABEL application='Auth Service'
 
 WORKDIR /app
 
@@ -6,25 +9,67 @@ COPY package.json ./
 
 COPY tsconfig*.json ./
 
-RUN npm install 
+COPY src ./src
 
-COPY ./src .
+COPY .env ./
+
+RUN yarn install 
+
+# Runtime environmental variables
+ENV NODE_ENV=development
+ENV PORT=4001
+ENV DB_PASSWORD=
+ENV DB_USER=
+ENV DB_NAME=
+ENV DB_URL=
+ENV DB_PORT=
+ENV DB_TIMEOUT=
+ENV BASE_PATH='/api/v1/auth'
+ENV JWT_SECRET=
+ENV AUTH_COOKIE_NAME=
+ENV AUTH_COOKIE_SECRET=
+ENV S3_BUCKET=
+ENV S3_ACCESS_ID=
+ENV S3_ACCESS_KEY=
+ENV S3_REGION=us-east-1
+ENV CLOUDFRONT_URL=https://dia98v6kyy7tu.cloudfront.net/
+
+# Build time environmental variables
+ENV NODE_ENV=development
+ENV PORT=4001
+ENV DB_PASSWORD=${DB_PASSWORD}
+ENV DB_USER=${DB_USER}
+ENV DB_NAME=${DB_NAME}
+ENV DB_URL=${DB_URL}
+ENV DB_PORT=3306
+ENV DB_TIMEOUT=50000
+ENV BASE_PATH='/api/v1/auth'
+ENV JWT_SECRET=8db8f85991bb28f45ac0107f2a1b349c
+ENV AUTH_COOKIE_NAME=-dx2t3el2iak9t0esi
+ENV AUTH_COOKIE_SECRET=c358db01-b418-4659-9f2e-739cbe96e73f
+ENV S3_BUCKET=${S3_BUCKET}
+ENV S3_ACCESS_ID=${S3_ACCESS_ID}
+ENV S3_ACCESS_KEY=${S3_ACCESS_KEY}
+ENV S3_REGION=us-east-1
+ENV CLOUDFRONT_URL=https://dia98v6kyy7tu.cloudfront.net/
+
 
 RUN npm run build
 
 
-FROM node:21-alpine3.18
+FROM node:20.5.0
 
 WORKDIR /app
 
-RUN apk add --no-cache curl
-
 COPY package.json ./
 
-RUN npm install -g pm2 npm@latest
+
+RUN yarn add global pm2 
+
+RUN yarn install --prod --ignore-engines
 
 COPY --from=builder /app/build ./build
 
-EXPOSE 1911
+EXPOSE 4001
 
-CMD [ "npm", 'run', 'start' ]
+CMD [ "npm", "run", "start" ]
