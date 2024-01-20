@@ -19,7 +19,7 @@ pipeline  {
 
         // these should be parameters to the job
         // the default value can be set using parameters
-        AWS_ACCOUNT_ID= credentials("AWS_ACCOUNT_ID")
+        AWS_ACCOUNT_ID="${AWS_ACCOUNT_ID}"
         AWS_DEFAULT_REGION="${AWS_DEFAULT_REGION}"
         IMAGE_REPO_NAME="${IMAGE_REPO_NAME}"
         registryCredential="${registryCredential}"
