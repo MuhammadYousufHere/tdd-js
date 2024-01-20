@@ -11,8 +11,6 @@ COPY tsconfig*.json ./
 
 COPY src ./src
 
-COPY .env ./
-
 RUN yarn install 
 
 # Runtime environmental variables
