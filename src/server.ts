@@ -42,7 +42,8 @@ function routesMiddleware(app: Application): void {
 }
 
 function securityMiddleware(app: Application) {
-  app.set('trust proxy', 1)
+  // app.set('trust proxy', 1)
+  app.set('trust proxy', true)
   app.disable('etag')
   app.use(hpp())
   app.use(helmet())
