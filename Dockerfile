@@ -11,7 +11,7 @@ COPY tsconfig*.json ./
 
 COPY src ./src
 
-RUN yarn install 
+RUN yarn install --ignore-engines
 
 # Runtime environmental variables
 ENV NODE_ENV=development
@@ -53,16 +53,16 @@ ENV CLOUDFRONT_URL=https://dia98v6kyy7tu.cloudfront.net/
 
 
 RUN npm run build
+RUN wget https://gobinaries.com/tj/node-prune --output-document - | /bin/sh && node-prune
 
-
-FROM node:20.5.0
+FROM node:20.5.0 as runner
+ENV NODE_ENV=production
 
 WORKDIR /app
 
 COPY package.json ./
 
 
-RUN yarn add global pm2 
 
 RUN yarn install --prod --ignore-engines
 
