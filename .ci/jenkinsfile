@@ -24,6 +24,25 @@ pipeline  {
         IMAGE_REPO_NAME="${IMAGE_REPO_NAME}"
         registryCredential="${registryCredential}"
 
+        // Envs for Build
+        NODE_ENV="${NODE_ENV}"
+        PORT=4001
+        DB_PASSWORD="${DB_PASSWORD}"
+        DB_USER="${DB_USER}"
+        DB_NAME="${DB_NAME}"
+        DB_URL="${DB_URL}"
+        DB_PORT=3306
+        DB_TIMEOUT=50000
+        BASE_PATH="/api/v1/auth"
+        JWT_SECRET="${JWT_SECRET}"
+        AUTH_COOKIE_NAME="${AUTH_COOKIE_NAME}"
+        AUTH_COOKIE_SECRET="${AUTH_COOKIE_SECRET}"
+        S3_BUCKET="${S3_BUCKET}"
+        S3_ACCESS_ID="${S3_ACCESS_ID}"
+        S3_ACCESS_KEY="${S3_ACCESS_KEY}"
+        S3_REGION="${S3_REGION}"
+        CLOUDFRONT_URL="${CLOUDFRONT_URL}"
+
         // Build the registry
         registry = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_REPO_NAME}"
 
@@ -53,7 +72,6 @@ pipeline  {
         stage('Print Environment Variables') {
             steps {
                 script {
-                    echo "AWS_ACCOUNT_ID: ${env.AWS_ACCOUNT_ID}"
                     echo "AWS_DEFAULT_REGION: ${env.AWS_DEFAULT_REGION}"
                     // Add more variables as needed
                 }
@@ -108,6 +126,31 @@ pipeline  {
                     }
                     else{
                         echo "We are building a non tag build"
+                          //Build a dockerfile based on args and define them in variable for development
+                        //added build time and build version using latest version.
+      
+                        def buildArgs = """\
+                         --build-arg PORT=${env.PORT} \
+                         --build-arg DB_PASSWORD=${env.DB_PASSWORD} \
+                         --build-arg DB_USER=${env.DB_USER} \
+                         --build-arg DB_NAME=${env.DB_NAME} \
+                         --build-arg DB_URL=${env.DB_URL} \
+                         --build-arg DB_PORT=${env.DB_PORT} \
+                         --build-arg DB_TIMEOUT=${env.DB_TIMEOUT} \
+                         --build-arg BASE_PATH=${env.BASE_PATH} \
+                         --build-arg JWT_SECRET=${env.JWT_SECRET} \
+                         --build-arg AUTH_COOKIE_NAME=${env.AUTH_COOKIE_NAME} \
+                         --build-arg AUTH_COOKIE_SECRET=${env.AUTH_COOKIE_SECRET} \
+                         --build-arg APP_BUILD_VERSION="Latest Version" \
+                         --build-arg APP_BUILD_TIME=${env.currentDate}\
+                         --build-arg S3_BUCKET=${env.S3_BUCKET}\
+                         --build-arg S3_ACCESS_ID=${env.S3_ACCESS_ID}\
+                         --build-arg S3_ACCESS_KEY=${env.S3_ACCESS_KEY}\
+                         --build-arg S3_REGION=${env.S3_REGION}\
+                         --build-arg CLOUDFRONT_URL=${env.CLOUDFRONT_URL}\
+                         -f Dockerfile \
+                         ."""
+
 
                         // Print out the Tag Build
                         echo "Build Date ${env.currentDate}"
