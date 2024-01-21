@@ -16,8 +16,6 @@ export function appRoutes(app: Application): void {
 
 function catchAll(app: Application) {
   app.all('*', (_req: Request, _res: Response, next: NextFunction) => {
-    console.log({ path: _req.path })
-    console.log({ url: _req.url })
     next(new NotFoundError('This endpoint is not found', 'catchAll()'))
   })
 }
