@@ -50,6 +50,15 @@ pipeline  {
 
     // stages
     stages {
+        stage('Print Environment Variables') {
+            steps {
+                script {
+                    echo "AWS_ACCOUNT_ID: ${env.AWS_ACCOUNT_ID}"
+                    echo "AWS_DEFAULT_REGION: ${env.AWS_DEFAULT_REGION}"
+                    // Add more variables as needed
+                }
+            }
+        }
 
         // Build Docker stage
         stage('Build Image') {
