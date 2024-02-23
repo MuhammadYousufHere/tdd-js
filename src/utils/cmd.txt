@@ -1,0 +1,3 @@
+ "migerate:create": "npx sequelize-cli migration:create",
+    "migrate:rollback": "env-cmd npx sequelize-cli db:migrate:undo",
+    "migerate": "env-cmd npx sequelize-cli db:migrate"
